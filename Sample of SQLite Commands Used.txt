@@ -1,0 +1,98 @@
+﻿DELETE FROM Spills
+WHERE "InitialReportDate" IS NULL;
+
+
+5,417 records removed
+
+
+DELETE FROM Spills
+WHERE "FacilityType" IS NULL;
+
+
+Execution finished without errors.
+Result: query executed successfully. Took 239ms, 211 rows affected
+At line 1:
+DELETE FROM Spills
+WHERE "FacilityType" IS NULL;
+
+
+SELECT * FROM Spills
+WHERE "Operator" IS NULL;
+
+Returned 0 rows
+
+
+DELETE FROM Spills
+WHERE "livestock" IS NULL;
+
+
+Execution finished without errors.
+Result: query executed successfully. Took 227ms, 1718 rows affected
+At line 1:
+DELETE FROM Spills
+WHERE "livestock" IS NULL;
+
+
+select operator, TrackingNum , COUNT(*)
+from Spills
+group by operator, TrackingNum
+having count(*) > 1;
+
+
+Execution finished without errors.
+Result: 3769 rows returned in 567ms
+At line 1:
+select operator, TrackingNum , COUNT(*)
+from Spills
+group by operator, TrackingNum
+having count(*) > 1;
+
+
+select InitialReportDate, DateofDiscovery, operator, TrackingNum, FacilityType, Latitude, Longitude, county, 
+livestock, PublicByway, ResidenceOrOccupiedStructure, CurrentLandUse, OtherLandUse, SurfaceWaterSupplyArea, WatersoftheState, SpillDescription
+from Spills
+group by operator, TrackingNum
+
+
+
+
+Execution finished without errors.
+Result: 4487 rows returned in 825ms
+At line 1:
+select InitialReportDate, DateofDiscovery, operator, TrackingNum, FacilityType, Latitude, Longitude, county,
+livestock, PublicByway, ResidenceOrOccupiedStructure, CurrentLandUse, OtherLandUse, SurfaceWaterSupplyArea, WatersoftheState, SpillDescription
+from Spills
+group by operator, TrackingNum
+
+
+Saved as a CSV. 
+
+
+
+
+Imported data into sas. Decided to drop the description and other land  use columns 
+
+
+For H1, finding the mean by taking 16% of the total number of logs (4,487) divided by the number of operators (239) = 3. 
+
+
+Cleaned the facility type column and the datetimes
+
+
+select InitialReportDate,DateofDiscovery,Operator,OperatorNum,TrtpackingNum,FacilityType,SpillType,Latitude,Longitude,county,livestock,PublicByway,ResidenceOrOccupiedStructure,CurrentLandUse,SurfaceWaterSupplyArea,WatersoftheState,
+julianday(InitialReportDate) - julianday(DateofDiscovery) as DaysToReport
+from SpillsV2;
+ 
+Cutting outliers cut the date 
+
+
+        UPDATE SpillsV4 SET SpillType = 0 where SpillType = "Historical";
+        UPDATE SpillsV4 SET SpillType = 1 where SpillType = "Recent";
+
+
+Creating a count of incidents per day for a continuous variable in sql
+
+
+Select InitialReportDate, DateofDiscovery, COUNT(InitialReportDate) as InitialReportDateVolume, COUNT(DateOfDiscovery) as DateofDiscoveryVolume from SpillsV4
+group by InitialReportDate, DateofDiscovery
+having count(*) > 0;
